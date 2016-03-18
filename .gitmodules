@@ -1,0 +1,6 @@
+[submodule "lib/life-client"]
+	path = lib/life-client
+	url = git@github.com:xinxinw1/life-client
+[submodule "lib/life-tools"]
+	path = lib/life-tools
+	url = git@github.com:xinxinw1/life-tools
