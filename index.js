@@ -3,8 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-app.use(express.static('public'));
-app.use('/lib', express.static('lib'));
+app.use(express.static('lib/life-client'));
 
 io.on('connection', function(socket){
   console.log('a user connected');
