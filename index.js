@@ -22,12 +22,12 @@ state.onstop = function (){
 
 state.onfill = function (i, j){
   console.log('send fill');
-  io.emit('fill', {i: i, j: j});
+  io.emit('fill', i, j);
 };
 
 state.onempty = function (i, j){
   console.log('send empty');
-  io.emit('empty', {i: i, j: j});
+  io.emit('empty', i, j);
 };
 
 state.onsetstate = function (newstate){
@@ -58,23 +58,27 @@ io.on('connection', function (socket){
   });
   socket.on('refresh', function (){
     console.log('refresh');
-    state.refresh();
+    socket.emit('setstate', state.getState());
   });
   socket.on('checkstarted', function (){
     console.log('checkstarted');
     if (state.started()){
-      io.emit('start');
+      socket.emit('start');
     } else {
-      io.emit('stop');
+      socket.emit('stop');
     }
   });
-  socket.on('fill', function (o){
-    console.log('fill ' + o.i + ' ' + o.j);
-    state.fill(o.i, o.j);
+  socket.on('fill', function (i, j){
+    console.log('fill ' + i + ' ' + j);
+    state.fill(i, j);
   });
-  socket.on('empty', function (o){
-    console.log('empty ' + o.i + ' ' + o.j);
-    state.empty(o.i, o.j);
+  socket.on('empty', function (i, j){
+    console.log('empty ' + i + ' ' + j);
+    state.empty(i, j);
+  });
+  socket.on('fillobj', function (i, j, obj){
+    console.log('fillobj');
+    state.fillObj(i, j, obj);
   });
 });
 
