@@ -3,6 +3,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+app.set('port', (process.env.PORT || 8080));
+
 app.use(express.static('lib/life-client'));
 
 var LS = require('./lib/life-tools/life-state.js');
@@ -84,6 +86,6 @@ io.on('connection', function (socket){
 
 
 
-http.listen(8080, function(){
-  console.log('listening on *:8080');
+http.listen(app.get('port'), function(){
+  console.log('listening on port ' + app.get('port'));
 });
