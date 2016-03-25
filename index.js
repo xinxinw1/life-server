@@ -37,51 +37,83 @@ state.onsetstate = function (newstate){
   io.emit('setstate', newstate);
 };
 
+state.onspeed = function (s){
+  console.log('send speed');
+  io.emit('speed', s);
+};
+
+state.onrefspeed = function (r){
+  console.log('send refspeed');
+  io.emit('refspeed', r);
+};
+
 io.on('connection', function (socket){
   console.log('a user connected');
+  
   socket.on('disconnect', function (){
     console.log('user disconnected');
   });
+  
   socket.on('start', function (){
     console.log('start');
     state.start();
   });
+  
   socket.on('stop', function (){
     console.log('stop');
     state.stop();
   });
+  
   socket.on('step', function (){
     console.log('step');
     state.step();
   });
+  
   socket.on('clear', function (){
     console.log('clear');
     state.clear();
   });
+  
   socket.on('refresh', function (){
     console.log('refresh');
     socket.emit('setstate', state.getState());
   });
-  socket.on('checkstarted', function (){
-    console.log('checkstarted');
-    if (state.started()){
-      socket.emit('start');
-    } else {
-      socket.emit('stop');
-    }
+  
+  socket.on('copystate', function (){
+    console.log('copystate');
+    socket.emit('copystate', {
+      started: state.started(),
+      state: state.getState(),
+      speed: state.getSpeed(),
+      refspeed: state.getRefspeed()
+    });
   });
+  
   socket.on('fill', function (i, j){
     console.log('fill ' + i + ' ' + j);
     state.fill(i, j);
   });
+  
   socket.on('empty', function (i, j){
     console.log('empty ' + i + ' ' + j);
     state.empty(i, j);
   });
+  
   socket.on('fillobj', function (i, j, obj){
     console.log('fillobj');
     state.fillObj(i, j, obj);
   });
+  
+  socket.on('speed', function (s){
+    console.log('speed ' + s);
+    state.speed(s);
+  });
+  
+  socket.on('refspeed', function (r){
+    console.log('refspeed ' + r);
+    state.refspeed(r);
+  });
+  
 });
 
 
