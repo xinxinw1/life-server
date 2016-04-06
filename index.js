@@ -32,6 +32,11 @@ state.onempty = function (i, j){
   io.emit('empty', i, j);
 };
 
+state.onfillobj = function (i, j, obj){
+  console.log('send fillobj');
+  io.emit('fillobj', i, j, obj);
+};
+
 state.onsetstate = function (newstate){
   console.log('send setstate');
   io.emit('setstate', newstate);
@@ -45,6 +50,11 @@ state.onspeed = function (s){
 state.onrefspeed = function (r){
   console.log('send refspeed');
   io.emit('refspeed', r);
+};
+
+state.onsize = function (r, c){
+  console.log('send size');
+  io.emit('size', r, c);
 };
 
 io.on('connection', function (socket){
@@ -85,7 +95,8 @@ io.on('connection', function (socket){
       started: state.started(),
       state: state.getState(),
       speed: state.getSpeed(),
-      refspeed: state.getRefspeed()
+      refspeed: state.getRefspeed(),
+      size: state.getSize()
     });
   });
   
@@ -112,6 +123,11 @@ io.on('connection', function (socket){
   socket.on('refspeed', function (r){
     console.log('refspeed ' + r);
     state.refspeed(r);
+  });
+  
+  socket.on('size', function (r, c){
+    console.log('size ' + r + ' ' + c);
+    state.size(r, c);
   });
   
 });
