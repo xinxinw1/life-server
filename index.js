@@ -39,19 +39,14 @@ function makeRoom(room){
     nsp.to(room).emit('stop');
   };
   
-  state.onfill = function (i, j){
-    console.log(room, 'send fill');
-    nsp.to(room).emit('fill', i, j);
+  state.onset = function (st, i, j){
+    console.log(room, 'send set');
+    nsp.to(room).emit('set', st, i, j);
   };
   
-  state.onempty = function (i, j){
-    console.log(room, 'send empty');
-    nsp.to(room).emit('empty', i, j);
-  };
-  
-  state.onfillobj = function (i, j, obj){
-    console.log(room, 'send fillobj');
-    nsp.to(room).emit('fillobj', i, j, obj);
+  state.onsetobj = function (st, i, j, obj){
+    console.log(room, 'send setobj');
+    nsp.to(room).emit('setobj', st, i, j, obj);
   };
   
   state.onsetstate = function (newstate){
@@ -121,19 +116,14 @@ function makeRoom(room){
       });
     });
     
-    socket.on('fill', function (i, j){
-      console.log(room, 'fill ' + i + ' ' + j);
-      state.fill(i, j);
+    socket.on('set', function (st, i, j){
+      console.log(room, 'set', st, i, j);
+      state.set(st, i, j);
     });
     
-    socket.on('empty', function (i, j){
-      console.log(room, 'empty ' + i + ' ' + j);
-      state.empty(i, j);
-    });
-    
-    socket.on('fillobj', function (i, j, obj){
-      console.log(room, 'fillobj');
-      state.fillObj(i, j, obj);
+    socket.on('setobj', function (st, i, j, obj){
+      console.log(room, 'setobj', st, i, j);
+      state.setObj(st, i, j, obj);
     });
     
     socket.on('speed', function (s){
