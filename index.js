@@ -17,6 +17,9 @@ var rooms = {};
 var udfp = $.udfp;
 var min = $.min;
 
+var nump = $.nump;
+var strp = $.strp;
+
 var MAX_SPEED = 100;
 var MAX_REFSPEED = 10;
 
@@ -117,26 +120,31 @@ function makeRoom(room){
     });
     
     socket.on('set', function (st, i, j){
+      if (!nump(st) || !nump(i) || !nump(j))return;
       console.log(room, 'set', st, i, j);
       state.set(st, i, j);
     });
     
     socket.on('setobj', function (st, i, j, obj){
+      if (!nump(st) || !nump(i) || !nump(j))return;
       console.log(room, 'setobj', st, i, j);
       state.setObj(st, i, j, obj);
     });
     
     socket.on('speed', function (s){
+      if (!nump(s))return;
       console.log(room, 'speed ' + s);
       state.speed(min(MAX_SPEED, s));
     });
     
     socket.on('refspeed', function (r){
+      if (!nump(r))return;
       console.log(room, 'refspeed ' + r);
       state.refspeed(min(MAX_REFSPEED, r));
     });
     
     socket.on('size', function (r, c){
+      if (!nump(r) || !nump(c))return;
       console.log(room, 'size ' + r + ' ' + c);
       state.size(min(MAX_SIZE_ROWS, r), min(MAX_SIZE_COLS, c));
     });
@@ -168,6 +176,7 @@ nsp.on('connection', function (socket){
   });
   
   socket.on('join', function (room){
+    if (!strp(room))return;
     console.log('join', room);
     getRoom(room).addUser(socket);
   });
