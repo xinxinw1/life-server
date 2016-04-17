@@ -16,6 +16,11 @@ var min = $.min;
 var nump = $.nump;
 var strp = $.strp;
 
+var DEF_ROWS = 80;
+var DEF_COLS = 170;
+var DEF_SPEED = 10;
+var DEF_REFSPEED = 10;
+
 var MAX_SPEED = 100;
 var MAX_REFSPEED = 10;
 
@@ -27,7 +32,7 @@ var states = io.of("/states");
 function makeRoom(room){
   console.log("making room", room);
   
-  var state = LS.makeLifeState(80, 170);
+  var state = LS.makeLifeState(DEF_ROWS, DEF_COLS);
   
   state.onstart = function (){
     console.log(room, 'state start');
@@ -69,10 +74,29 @@ function makeRoom(room){
     states.to(room).emit('size', r, c);
   };
   
+  state.speed(DEF_SPEED);
+  state.refspeed(DEF_REFSPEED);
+  
+  var colors = [1, 2, 3];
+  var currcolor = 0;
+  
+  var clients = {};
+  
+  function getColor(id){
+    if (!udfp(clients[id]))return clients[id];
+    var c = colors[currcolor];
+    currcolor++;
+    if (currcolor >= colors.length)currcolor = 0;
+    clients[id] = c;
+    return c;
+  }
+  
   function addUser(socket){
     socket.join(room);
     
-    console.log(room, 'user added');
+    console.log(room, 'user added', socket.id);
+    
+    var c = getColor(socket.id);
     
     socket.emit('joined');
     
@@ -107,25 +131,40 @@ function makeRoom(room){
     
     socket.on('copystate', function (){
       console.log(room, 'copystate');
+      
       socket.emit('copystate', {
         started: state.started(),
         state: state.getState(),
         speed: state.getSpeed(),
         refspeed: state.getRefspeed(),
-        size: state.getSize()
+        size: state.getSize(),
+        color: c
       });
     });
     
-    socket.on('set', function (st, i, j){
-      if (!nump(st) || !nump(i) || !nump(j))return;
-      console.log(room, 'set', st, i, j);
-      state.set(st, i, j);
+    socket.on('fill', function (i, j){
+      if (!nump(i) || !nump(j))return;
+      console.log(room, 'fill', i, j, 'color', c);
+      state.set(c, i, j);
     });
     
-    socket.on('setobj', function (st, i, j, obj){
-      if (!nump(st) || !nump(i) || !nump(j))return;
-      console.log(room, 'setobj', st, i, j);
-      state.setObj(st, i, j, obj);
+    socket.on('empty', function (i, j){
+      if (!nump(i) || !nump(j))return;
+      console.log(room, 'empty', i, j, 'color', c);
+      state.set(0, i, j);
+    });
+    
+    socket.on('fillobj', function (i, j, obj){
+      if (!nump(i) || !nump(j))return;
+      console.log(room, 'fillobj', i, j, 'color', c);
+      state.setObj(c, i, j, obj);
+    });
+    
+    socket.on('color', function (st){
+      if (!nump(st))return;
+      console.log(room, 'color', st);
+      c = st;
+      socket.emit('color', st);
     });
     
     socket.on('speed', function (s){
