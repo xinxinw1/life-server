@@ -4,6 +4,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+console.log(process.env);
+
 var redisURL = process.env.REDIS_URL || "redis://localhost:6379";
 
 var RedisStore = require('connect-redis')(session);
