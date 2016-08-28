@@ -4,13 +4,9 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-console.log(process.env);
+//console.log(process.env);
 
-var redisURL = process.env.REDIS_URL || "redis://localhost:6379";
-
-var RedisStore = require('connect-redis')(session);
 var sessionMiddleware = session({
-  store: new RedisStore({ url: redisURL }),
   secret: 'pass',
   resave: true,
   saveUninitialized: true
@@ -22,9 +18,9 @@ app.set('port', (process.env.PORT || 8080));
 app.use(sessionMiddleware);
 
 app.use(function (req, res, next){
-  console.log("Server connection with session");
-  console.log(new Date());
-  console.log(req.sessionID);
+  //console.log("Server connection with session");
+  //console.log(new Date());
+  //console.log(req.sessionID);
   next();
 });
 
