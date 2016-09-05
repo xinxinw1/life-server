@@ -2,7 +2,12 @@ var express = require('express');
 var session = require('express-session');
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+
+if (global.io !== undefined){
+  var io = global.io;
+} else {
+  var io = require('socket.io')(http);
+}
 
 //console.log(process.env);
 
