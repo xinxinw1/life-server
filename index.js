@@ -62,6 +62,10 @@ states.on('connection', function (socket){
   });
 });
 
-http.listen(app.get('port'), function(){
-  console.log('listening on port ' + app.get('port'));
-});
+if (require.main === module){
+  http.listen(app.get('port'), function(){
+    console.log('listening on port ' + app.get('port'));
+  });
+} else {
+  module.exports = app;
+}
