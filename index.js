@@ -24,7 +24,7 @@ app.use(function (req, res, next){
   next();
 });
 
-app.use(express.static('lib/life-client'));
+app.use(express.static(__dirname + '/lib/life-client'));
 
 var $ = require('./lib/tools/tools');
 
