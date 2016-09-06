@@ -1,0 +1,7 @@
+apps:
+  - script: ./index.js
+    name: 'life-server'
+    watch: true
+    env:
+      PORT: 8081
+
