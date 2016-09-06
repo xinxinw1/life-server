@@ -68,7 +68,7 @@ states.on('connection', function (socket){
 });
 
 if (require.main === module){
-  http.listen(app.get('port'), function(){
+  http.listen(app.get('port'), '127.0.0.1', function(){
     console.log('listening on port ' + app.get('port'));
   });
 } else {
