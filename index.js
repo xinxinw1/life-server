@@ -19,6 +19,7 @@ var sessionMiddleware = session({
 var sharedsession = require("express-socket.io-session");
 
 app.set('port', (process.env.PORT || 8080));
+app.set('hostname', process.env.HOSTNAME || undefined);
 
 app.use(sessionMiddleware);
 
@@ -68,7 +69,7 @@ states.on('connection', function (socket){
 });
 
 if (require.main === module){
-  http.listen(app.get('port'), '127.0.0.1', function(){
+  http.listen(app.get('port'), app.get('hostname'), function(){
     console.log('listening on port ' + app.get('port'));
   });
 } else {
